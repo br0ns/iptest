@@ -1,27 +1,22 @@
 val use = fn f => use f handle _ => quit ()
 ;use "MyLib.sml";
-(* ;load "MyLib"; *)
 ;use "Config.sml";
 
 structure Constants =
 struct
     val DEBUG = false
     val MODEKSEMPLER = Config.MODEKSEMPLER
-    val (here, testset, besvarelse) =
+    val (TEST, BESVARELSE) =
         case rev $ CommandLine.arguments () of
-          a :: b :: c :: _ => (c, b, a)
+          a :: b :: _ => (b, a)
         | _ => raise Fail "Too few arguments"
-    val BESVARELSE = besvarelse
-    val TEST =
-        OS.Path.mkCanonical
-          ("./" ^ (OS.Path.dir here) ^ "/" ^ testset)
     val FILER = TEST ^ "/filer"
     val INDRYK = Config.INDRYK
     val KOLONNER = Config.KOLONNER
 end
 
 fun maybeUse f = if OS.FileSys.access (f, nil) then use f else ()
-;List.app use ["Registrer.sig", "Registrer.sml",
+;List.app use ["Registrer.sml",
                "Vis.sig", "Vis.sml",
                "Test.sig", "Test.sml",
                "Egenskaber.sig",
@@ -43,8 +38,8 @@ open Registrer Vis infix 4 -->
 open TestDSL
 infixr 0 slut er
 infix 1 afproev note hvor og
-infix 2 ? !! ej indeholder
-infix 3 ::: & ==> ~~> !!! mester
+infix 2 ? indeholder
+infix 3 ::: & ==> ~~> !!!
 infix 4 eller
 ;maybeUse (Constants.TEST ^ "/ekstra.sml");
 ;use (Constants.TEST ^ "/test.sml");
