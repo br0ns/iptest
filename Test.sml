@@ -115,8 +115,9 @@ fun udskriv (saetnavn, opgs) =
                          indent $ vsep $ punctuate ln $ List.take (meksr, lmeksr)
                  end
               )
-      fun opgave ((nr, navn, note), fs) =
-          txt "Opgave" ++ txt nr ++ dash ++ txt navn ^^ dot \
+      fun opgave ((navn, beskriv, note), fs) =
+          txt "Opgave" ++ txt navn ++
+              (if beskriv <> "" then dash ++ txt beskriv else empty) ^^ dot \
               (case note of
                  SOME n => str n ^^ ln
                | NONE => empty) ^^

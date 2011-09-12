@@ -32,6 +32,7 @@ open Registrer Vis infix 4 -->
 ;maybeUse (Constants.TEST ^ "/visere.sml");
 ;use (Constants.TEST ^ "/funktioner.sml");
 
+;OS.FileSys.mkDir (Constants.TEST ^ "/filer") handle OS.SysErr _ => ();
 ;loadPath := (Constants.TEST ^ "/filer") :: !loadPath;
 ;maybeUse (Constants.TEST ^ "/vejl.sml");
 

@@ -1,0 +1,309 @@
+
+#+TITLE: IPTest
+
+* Installation
+  Systemet kan hentes fra som tarball fra
+  [[https://github.com/mortenbp/iptest/tarball/master]]. Der er ingen krav til hvor
+  systemet gemmes.
+
+* Brug
+  Man bruger systemet således:
+  1) Sørg for at filen =[iptest]/test= er eksekvérbar.
+  2) Systemet bruges ved fra kommandolinjen at skrive
+     #+BEGIN_EXAMPLE
+     [iptest]/test [sæt] [besvarelse]
+     #+END_EXAMPLE
+     hvor =[iptest]= er mappen systemet ligger i, =[sæt]= er mappen det ønskede
+     afprøvningssæt ligger i, og =[besvarelse]= er filen som ønskes afprøvet.
+
+     Er systemet f.eks. installeret i =~/ip10/test= og filen
+     =~/ip10/morten.eksamen.sml= ønskes afprøvet med sættet =~/ip10/test/eks=
+     skrives
+     #+BEGIN_EXAMPLE
+     ~/ip10/test ~/ip10/test/eks ~/ip10/morten.eksamen.sml
+     #+END_EXAMPLE
+     Herefter vil systemet starte afprøvningen.
+
+  3) Hvis besvarelsen indeholder syntaktiske fejl, vil man se MosML's
+     fejlmeddelelse. MosML afsluttes som sædvanligt med C-d. Ret koden til eller
+     udkommenter fejl, og prøv så igen.
+
+  4) Hvis der ikke er syntaktiske fejl begynder typetjekket. Hvis en funktion i
+     besvarelsen ikke har den rigtige type, vil MosML klage over det. MosML
+     afsluttes med C-d, koden rettes til eller udkommenteres, og der prøves
+     igen.
+
+  5) Hvis der ikke er syntaks- eller typefejl starter afprøvningen. For hvert
+     afprøvningstilfælde udskrives navnet på den funktion som afprøves. Tager et
+     tilfælde meget lang tid, kan man trykke på C-c. Systemet vil da fortsætte
+     med næste afprøvningstilfælde og det vil fremgå af den endelige rapport at
+     en kørsel blev afbrudt.
+
+  Når afprøvningen er overstået udskrives en rapport med resultatet. Rapporten
+  gemmes også i filen =[besvarelse].rapport=
+  (=~/ip10/morten.eksamen.sml.rapport= i eksemplet ovenfor). De enkelte
+  funktioner grupperes efter den opgave de hører under. En opgave kan være
+  ledsaget af en note. Hvis den er det, udskrives noten umiddelbart før
+  funktionerne. En funktion kan være
+  - OK :: Funktionen gennemgik alle afprøvningstilfælde. Antallet af tilfælde står i
+          parrentes efter 'OK'.
+  - Ikke OK :: Hvis funktionen dumpede et eller flere afprøvningstilde udskrives
+               modeksempler. Et modeksempel består af funktionens inddata, dens uddata og
+               det forventede resultat.
+  - Udeladt :: Er funktionen udeladt vises blot teksten 'Udeladt'.
+
+* Afprøvnings-DSL
+  Afprøvningstilfælde findes i filen =[sæt]/test.sml=. Til at lave
+  afprøvningssæt bruges et simpelt eDSL.
+** Simpel brug
+   Et afprøvningssæt er bygget op af følgende dele:
+   - Et afprøvningssæt starter altid på
+     #+BEGIN_EXAMPLE
+     saet [navn] er
+     #+END_EXAMPLE
+     og slutter på
+     #+BEGIN_EXAMPLE
+     heltslut
+     #+END_EXAMPLE
+
+   - Imellem =er= og =heltslut= kan skrives et antal opgaver. Hver opgave start
+     med
+     #+BEGIN_EXAMPLE
+     opgave "[navn]" "[beskrivelse]"
+     #+END_EXAMPLE
+     og slutter på
+     #+BEGIN_EXAMPLE
+     slut
+     #+END_EXAMPLE
+     Umiddelbart efter opgavens navn og beskrivelse kan valgfrit angives en note
+     samt et antal filer. En note angives ved at skrive
+     #+BEGIN_EXAMPLE
+     note "[note]"
+     #+END_EXAMPLE
+     og en fil ved at skrive
+     #+BEGIN_EXAMPLE
+     hvor "[fil]" indeholder "[data]"
+     #+END_EXAMPLE
+     Note: Husk at sætte passende linjeskift i filer.
+
+   - Efter eventuel note og filer følger afprøvningen af et antal funktioner. En
+     funktionsafprøvning starter på
+     #+BEGIN_EXAMPLE
+     afproev [funktion]
+     #+END_EXAMPLE
+     (Bemærk: ingen anførselstegn.)
+
+   - En funktionsafprøvning består af et antal afprøvningstilfælde. Som
+     udgangspunkt tager alle afprøvningstilfælde formen
+     #+BEGIN_EXAMPLE
+     ? [x_1] & [x_2] & [x_3] ::: [p_1] eller [p_2] eller [p_3]
+     #+END_EXAMPLE
+     hvor =[x_1]=, =[x_2]= og =[x_3]= er argumenter (som gives sekventialiseret)
+     og =[p_1]=, =[p_2]= og =[p_3]= er prædikater. Hvis funktionen kun tager et
+     enkelt argument udelades =&= og hvis resultatet kun må opfylde et prædikat
+     udelades =eller=.
+
+     Det forklares i afsnittet "Nye prædikater" hvordan nye prædikater kan
+     konstrueres, men systemet leveres med et antal standardprædikater:
+     | Syntaks          | Opfyldt hvis                                             |
+     | =lig x=          | Resultatet er =x=                                        |
+     | =kaster exn=     | Funktionen kaster undtagelsen =exn= [fn:1]               |
+     | =reference f=    | Funktionen opfører sig som referenceimplementeringen =f= |
+     | =circa x=        | Resultatet (af typen =real=) er i omegnen af =x=         |
+     | =permutation xs= | Resultatet er en permutation af listen =xs=              |
+     | =delliste xs=    | Resultatet er en delliste af listen =xs=                 |
+     | =blandt xs=      | Resultatet er blandt værdierne i listen =xs=             |
+
+     Derudover kan nogle afprøvningstilfælde skrives kortere med syntaktisk
+     sukker:
+     | Dette...           | kan skrives således |
+     | =? x ::: lig y=    | =? x ==> y=         |
+     | =? x ::: kaster e= | =? x !!! e=         |
+     | =? x ::: circa y=  | =? x ~~> y=         |
+
+     Nøgleordet =fil= kan bruges til at tilgå filer oprettet med
+     =hvor= -- =indeholder= -konstruktionen. Eksempel:
+     #+BEGIN_EXAMPLE
+     ? fil "foobar" ::: lig 42
+     #+END_EXAMPLE
+
+*** Eksempel
+    Afprøvningssættet og en vejledende løsning fra eksamen i IP2010 kan findes i
+    mappen =[iptest]/eksempel=. Forsimplede dele er gengivet her:
+    #+BEGIN_SRC: sml
+    saet "Introduktion til Programmering 2010" er
+
+    opgave "1" "Fjern"
+    note "Delopgave b kan ikke maskinafprøves."
+      afproev fjern
+        ? #"t" & explode "klatret" ==> (explode "klaret", 3)
+        ? #"a" & [#"a"]            ==> ([], 0)
+    slut
+
+    opgave "3" "Sorter og permuter"
+    note "Delopgave b kan ikke maskinafprøves."
+      afproev sortPerm
+        ? [3.4, 1.7, 6.9, 2.1] ==> ([1, 3, 0, 2], [1.7, 2.1, 3.4, 6.9])
+        ? []                   ==> ([], [])
+        ? [1.0, 1.0, 1.0]      ::: blandt [([0, 1, 2], [1.0, 1.0, 1.0])
+                                         , ([0, 2, 1], [1.0, 1.0, 1.0])
+                                         , ([1, 0, 2], [1.0, 1.0, 1.0])
+                                         , ([1, 2, 0], [1.0, 1.0, 1.0])
+                                         , ([2, 0, 1], [1.0, 1.0, 1.0])
+                                         , ([2, 1, 0], [1.0, 1.0, 1.0])
+                                         ]
+    slut
+
+    opgave "4" "Polynomier"
+    note "Husk at bemærke køretiden i delopgave c."
+      afproev evalPoly
+        ? [2, 0, 0, 1, ~18, ~3] & 2 ==> 29
+
+      afproev visPoly
+        ? [2, 0, 0, 1, ~18, ~3] ==> "2x^5+x^2-18x-3"
+    slut
+
+    opgave "5" "Kalender"
+    hvor "nem.txt" indeholder
+    "11 08 2011 Jane & Svends sølvbryllup\n\
+    \23 10 2010 middag hos Aase\n\
+    \09 11 2010 Dansk Datahistorisk Forening\n\
+    \11 11 1968 Møde med JS\n"
+
+    og "ingen-nl-til-slut.txt" indeholder
+    "11 08 2011 Jane & Svends sølvbryllup\n\
+    \23 10 2010 middag hos Aase\n\
+    \09 11 2010 Dansk Datahistorisk Forening\n\
+    \11 11 1968 Møde med JS"
+
+    og "tom.txt" indeholder "\n"
+
+    og "tom-uden-nl.txt" indeholder ""
+
+      afproev hentKalender
+      (* kaltjek er defineret i ekstra.sml og tilpasset de fire aftaler givet som
+       * eksempel i eksamensopgaven
+       *)
+        ? fil "nem.txt"                     ::: kaltjek
+        ? fil "ingen-nl-til-slut.txt"       ::: kaltjek
+        ? fil "tom.txt"                     ==> []
+        ? fil "tom-uden-nl.txt"             ==> []
+    slut
+
+    heltslut
+    #+END_SRC
+
+** Nye prædikater
+   Nye prædikater kan konstrueres med funktionerne =praedikat= og
+   =aekvivalens= eller helt fra bunden. Nye prædikater bør angives i filen
+   =[sæt]/ekstra.sml=.
+*** =praedikat=
+    Funktionen tager en tekst og en prædikatfunktion som argumenter. Teksten
+    bruges til at udskrive det forventede resultat. Alle forekomster af tegnet
+    "=_=" (bundstreg) udskiftes med inddata til den funktion som afprøves.
+*** =aekvivalens=
+    Funktionen tager en tekst, en sammenligningsfunktion og et element der skal
+    sammenlignes med. Sammenligningsfunktionen får det angivne element som sin
+    højre parameter og resultatet fra den funktion der afprøves som sin venstre
+    parameter. Teksten bruges til at vise det forventede resultat. Alle
+    forekomster af tegnet "=_=" (bundstreg) udskiftes med det element som der
+    sammenlignes med.
+
+    Prædikatetkonstruktøren =circa= er f.eks. implementeret således:
+    #+BEGIN_SRC: sml
+    fun circa x =
+        aekvivalens
+          "_ modulo epsilon"
+          (fn (x, y) => let val epsilon = 0.00001 in Real.abs (x - y) < epsilon end)
+          x
+    #+END_SRC
+*** Fra bunden
+    Et prædikat er i bund og grund blot en funktion som givet inddata producere
+    et par bestående på venstresiden af en prædikatfunktion og på højresiden en
+    liste af forventninger.
+
+    Prædikatfunktionen har typen
+    #+BEGIN_SRC: sml
+    'b Lazy.t -> bool
+    #+END_SRC
+    Grunden til det er at resultatet af en kørsel jo kan være en undtagelse,
+    hvorfor prædikatfunktionen tager resultatet som en doven værdi. Den dovne
+    værdi kan evalueres med funktionen =Lazy.force=. I det fald risikerer man
+    altså at en undtagelse kastes.
+
+    Forventninger kan tage to former:
+    - =Test.Vaerdi ([x], "[forventning]")= :: Det forventede resultat var
+      værdien =[x]=. Værdien udskrives i konteksten =[forventning]=. For
+      prædikatet =lig 42= er konteksten f.eks. blot =_=.
+    - =Test.Beskrivelse ("[forventning]")= :: Det forventede resultat beskrives
+      bedst med en tekst. Forekomster af tegnet "=_=" udskiftes med inddata til
+      den funktion som afprøves.
+
+    Som eksempel er her implementeringen af prædikatkonstruktøren =reference=:
+    #+BEGIN_SRC: sml
+    fun reference f ind =
+        let
+          val r' = L (fn _ => f ind)
+          datatype 'a res = V of 'a
+                      | E of string
+          fun eval x = V $ F x handle e => E $ General.exnName e
+        in
+          (fn r => eval r = eval r',
+           [Test.Vaerdi (F r', "_ (referenceimplementering)")
+            handle e => Test.Beskrivelse $ General.exnName e ^
+                        " (referenceimplementering)"
+           ]
+          )
+        end
+    #+END_SRC
+
+* Afprøvnignssæt
+  Et minimalt afprøvningssæt består af filerne
+  - =stub.sml=
+  - =typer.sml=
+  - =funktioner.sml=
+  - =test.sml=
+  Derudover vil disse filer blive indlæst hvis de findes
+  - =visere.sml= -- Funktioner til at udskrive ikke-indbyggede typer hører til her.
+  - =vejl.sml= -- Denne fil er forbeholdt referenceimplementeringer af de
+    funktioner der skal afprøves.
+  - =ekstra.sml= -- Kode som ikke hører til andetsteds kan lægges her.
+
+** =stub.sml=
+   Denne fil indeholder stubimplementeringer af de funktioner der skal
+   afprøves. En stubimplementering tager formen
+   #+BEGIN_SRC: sml
+   val foo = stub
+   #+END_SRC
+** =typer.sml=
+   Her angives hver funktions type. Det er ikke strengt nødvendigt, men
+   fejlmeddelelserne fra MosML bliver meget lettere at tyde. Et typetjek af en
+   funktion tager formen
+   #+BEGIN_SRC: sml
+   ;foo : bar list -> baz;
+   #+END_SRC
+** =funktioner.sml=
+   Hver funktion skal registreres i systemet for at ind-, uddata og funktionens
+   navn kan udskrives. En registrering tager formen
+   #+BEGIN_SRC: sml
+   val foo =
+       funktion[n]
+         "foo" foo $
+         list bar --> baz
+   #+END_SRC
+   (Bemærk: "typekonstruktører" anvendes prefix.)
+** Tjekliste
+   For hver funktion der skal afprøves skal man sikre sig at
+   1) Der findes en stubimplementering i =stub.sml=.
+   2) Der findes et typetjek i =typer.sml=.
+   3) Funktionen er registreret i =funktioner.sml=.
+* Konfiguration
+  Systemet kan konfigureres ved at ændre i filen =[iptest]/Config.sml=.
+
+
+
+[fn:1] Undtagelsen skal være en af standardundtagelserne =Bind=, =Chr=, =Div=,
+=Domain=, =Empty=, =Fail=, =Interrupt=, =Match=, =Option=, =Overflow=, =Size=,
+=Subscript=, =Out_Of_Memory= eller blot =undtagelse= for en hvilken-som-helst
+undtagelse.
+
