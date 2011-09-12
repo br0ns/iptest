@@ -2,7 +2,7 @@
 #+TITLE: IPTest
 
 * Installation
-  Systemet kan hentes fra som tarball fra
+  Systemet kan hentes som tarball fra
   [[https://github.com/mortenbp/iptest/tarball/master]]. Der er ingen krav til hvor
   systemet gemmes.
 
