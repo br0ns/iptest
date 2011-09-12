@@ -245,7 +245,7 @@
         let
           val r' = L (fn _ => f ind)
           datatype 'a res = V of 'a
-                      | E of string
+                          | E of string
           fun eval x = V $ F x handle e => E $ General.exnName e
         in
           (fn r => eval r = eval r',
