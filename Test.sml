@@ -37,15 +37,17 @@ fun tjek  ((n, f, va, vr), cs) =
       fun en (ind, egenskab) =
           let
             val (testf, forventninger) = egenskab ind
-            val _ = TextIO.println $ "Afprøver '" ^ n ^ "'..."
+            val _ = TextIO.print "."
             val _ = Benchmark.start ()
             val ud = L (fn _ => f ind)
             fun forventning f =
                 case f of
                   Vaerdi (x, s) => indsaet (vr x) s
                 | Beskrivelse s => indsaet (va ind) s
+            fun tjekUdeladt ud =
+                (F ud ; ()) handle Tom => raise Tom | _ => ()
           in
-            (if testf ud then
+            (if (tjekUdeladt ud ; testf ud) then
                OK
              else
                Modeksempel (va ind, vr $ F ud, map forventning forventninger)
@@ -70,11 +72,13 @@ fun tjek  ((n, f, va, vr), cs) =
               )
           end
     in
-      (n, Resultater $ map en $ rev cs handle Tom => Udeladt)
+      TextIO.println ("\n~~~~~ Afprøver %" <- n)
+    ; (n, Resultater $ map en $ rev cs handle Tom => Udeladt)
     end
 
 fun udskriv (saetnavn, opgs) =
     let
+      val _ = TextIO.print "\n~~~~~~~~~~~~~ Starter afprøvning ~~~~~~~~~~~~~"
       fun oprems fs =
           let
             val eller = txt "     eller"
