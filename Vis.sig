@@ -1,5 +1,6 @@
 signature Vis =
 sig
+  val unit : unit -> Layout.t
   val int : int -> Layout.t
   val real : real -> Layout.t
   val bool : bool -> Layout.t

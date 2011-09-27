@@ -3,6 +3,7 @@ struct
 open Layout
 infix ^^ ++ \ & \\ &&
 
+val unit = const $ txt "()"
 val char = chr
 val string = softtxt
 fun option _ NONE = txt "NONE"

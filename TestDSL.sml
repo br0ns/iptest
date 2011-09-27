@@ -136,15 +136,15 @@ fun which e =
     | undtagelse => NONE
 
 fun kaster e _ = (fn r => (F r ; false)
-                   handle e' =>
-                          case which e of
-                            SOME e => General.exnName e' = e orelse raise e'
-                          | NONE   => true
-              , [Test.Beskrivelse (case which e of
-                                     SOME e => e
-                                   | NONE => "en undtagelse")
-                ]
-               )
+                     handle e' =>
+                            case which e of
+                              SOME e => General.exnName e' = e orelse raise e'
+                            | NONE   => true
+                , [Test.Beskrivelse (case which e of
+                                       SOME e => e
+                                     | NONE => "en undtagelse")
+                  ]
+                 )
 
 fun a !!! b = a ::: kaster b
 
