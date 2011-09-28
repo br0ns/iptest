@@ -4,8 +4,8 @@ open Layout
 infix ^^ ++ \ & \\ &&
 
 val unit = const $ txt "()"
-val char = chr
-val string = softtxt
+fun char c = txt "#\"" ^^ txt (Char.toString c) ^^ txt "\""
+fun string s = quote ^^ softtxt (String.toString s) ^^ quote
 fun option _ NONE = txt "NONE"
   | option f (SOME x) = txt "SOME" & parens (f x)
 
