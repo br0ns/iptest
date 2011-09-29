@@ -25,7 +25,10 @@ fun maybeUse f = if OS.FileSys.access (f, nil) then use f else ()
 fun stub _ = raise Test.Tom
 ;use (Constants.TEST ^ "/stub.sml");
 
+(* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - *)
+;println $ "~~~~~ Evaluerer '" ^ Constants.BESVARELSE ^ "'...";
 ;use Constants.BESVARELSE;
+(* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - *)
 
 ;use (Constants.TEST ^ "/typer.sml");
 open Registrer Vis infix 4 -->
