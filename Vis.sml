@@ -3,6 +3,8 @@ struct
 open Layout
 infix ^^ ++ \ & \\ &&
 
+type 'a t = 'a -> Layout.t
+
 val unit = const $ txt "()"
 fun char c = txt "#\"" ^^ txt (Char.toString c) ^^ txt "\""
 fun string s = quote ^^ softtxt (String.toString s) ^^ quote

@@ -1,12 +1,12 @@
 val fjern =
     funktion2
       "fjern" fjern $
-      char --> list char --> par (list char, int)
+      char & list char --> par (list char, int)
 
 val udvaelg =
     funktion2
       "udvaelg" udvaelg $
-      list char --> list int --> list char
+      list char & list int --> list char
 
 val sortPerm =
     funktion
@@ -21,7 +21,7 @@ val visPoly =
 val evalPoly =
     funktion2
       "evalPoly" evalPoly $
-      list int --> int --> int
+      list int & int --> int
 
 val hentKalender =
     funktion
@@ -31,7 +31,7 @@ val hentKalender =
 val eval =
     funktion2
       "eval" eval $
-      prop --> tildeling --> bool
+      prop & tildeling --> bool
 
 val implies =
     funktion
@@ -81,4 +81,4 @@ val fraListe =
 val permNr =
     funktion2
       "permNr" permNr $
-      int --> int --> list int
+      int & int --> list int

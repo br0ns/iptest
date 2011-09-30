@@ -7,9 +7,9 @@ sig
   val eller : ('a, 'b) Test.egenskab * ('a, 'b) Test.egenskab ->
               ('a, 'b) Test.egenskab
 
-  val ==> : 'a * ''b -> 'a * ('_, ''b) Test.egenskab
-  val ~~> : 'a * real -> 'a * ('_, real) Test.egenskab
-  val !!! : 'a * exn' -> 'a * ('_, 'b) Test.egenskab
+  val ==> : 'a * ''b -> ('a, ''b) Test.tilfaelde
+  val ~~> : 'a * real -> ('a, real) Test.tilfaelde
+  val !!! : 'a * exn' -> ('a, 'b) Test.tilfaelde
 
 
   val lig : ''a -> ('_, ''a) Test.egenskab

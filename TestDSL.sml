@@ -3,7 +3,7 @@ struct
 infixr 0 slut er
 infix 1 afproev note hvor og
 infix 2 ? indeholder
-infix 3 ::: & ==> ~~> !!!
+infix 3 ::: & ==> ~~> !!! >>
 infix 4 eller
 
 type ('a, 'b) folder = ('a * 'b) * 'b -> 'a * 'b
@@ -34,10 +34,9 @@ fun fil n = Constants.FILER ^ "/" ^ n
 
 fun (opg, fs) afproev f = (opg, L (fn _ => Test.tjek f) :: fs)
 
-fun (f, cs) ? c = (f, c :: cs)
+fun (f, cs) ? c = (f, c @ cs)
 
-fun a & b = (a, b)
-fun a ::: b = (a, b)
+fun a ::: b = [(a, b)]
 
 fun aekvivalens s f x _ = (fn y => f (F y, x), [Test.Vaerdi (x, s)])
 fun praedikat s f _ = (f o F, [Test.Beskrivelse s])
@@ -55,6 +54,13 @@ fun reference f ind =
        ]
       )
     end
+
+fun automagisk _ r g =
+    List.tabulate (10000, fn _ => (Gen.run g, reference r))
+
+fun auto >> g = auto g
+
+val med = ()
 
 fun (x eller y) ind =
     let
