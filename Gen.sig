@@ -3,6 +3,8 @@ sig
   type 'a t
   val run : 'a t -> 'a
 
+  val &` : 'a t * 'b t -> ('a, 'b) Produkt.t t
+
   val unit : unit t
   val int : int t
   val real : real t
@@ -17,4 +19,6 @@ sig
   val triple : 'a t * 'b t * 'c t -> ('a * 'b * 'c) t
   val tupel4 : 'a t * 'b t * 'c t * 'd t -> ('a * 'b * 'c * 'd) t
   val tupel5 : 'a t * 'b t * 'c t * 'd t * 'e t -> ('a * 'b * 'c * 'd * 'e) t
+
+  val intRange : int * int -> int t
 end

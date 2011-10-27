@@ -72,10 +72,18 @@ fun lig x =
       op=
       x
 
+val epsilon = 0.00001
 fun circa x =
     aekvivalens
       "_ modulo epsilon"
-      (fn (x, y) => let val epsilon = 0.00001 in Real.abs (x - y) < epsilon end)
+      (fn (x, y) => Real.abs (x - y) < epsilon)
+      x
+
+fun parCirca x =
+    aekvivalens
+      "_ modulo epsilon"
+      (fn ((x1, x2), (y1, y2)) => Real.abs (x1 - y1) < epsilon andalso
+                                  Real.abs (x2 - y2) < epsilon)
       x
 
 fun permutation x =
@@ -105,6 +113,15 @@ fun blandt xs =
 
 fun a ==> b = a ::: lig b
 fun a ~~> b = a ::: circa b
+
+datatype fil_egenskab = Indeholdende
+val indeholdende = Indeholdende
+
+fun rm file = OS.FileSys.remove (fil file) handle _ => ()
+fun giverFilen name Indeholdende data =
+ fn _ => (fn _ => (TextIO.readFile (fil name) = data before rm (fil name))
+        , [Test.Beskrivelse ("en fil '" ^ name ^ "' indeholdende:\n" ^ data)]
+         )
 
 datatype exn' = Bind
               | Chr

@@ -97,6 +97,7 @@ fun tjek  ((n, f, va, vr), tilfs) =
     in
       TextIO.println ("\n~~~~~ Afprøver %" <- n)
     ; (n, Resultater $ map en $ rev tilfs handle Tom => Udeladt)
+      before ProgressBar.progress (!pbar) 1.0
     end
 
 fun udskriv (saetnavn, opgs) =

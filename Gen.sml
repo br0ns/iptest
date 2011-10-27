@@ -2,12 +2,16 @@ structure Gen :> Gen =
 struct
 type 'a t = Random.generator -> 'a
 
-fun run t = t $ Random.newgen ()
+val gen = ref $ Random.newgen ()
+fun run t = t $ !gen
+
+fun op &` (a, b) g = Produkt.& (a g, b g)
 
 fun unit _ = ()
 
 (* No need to go crazy here *)
-fun int g = Random.range (~1000, 1000) g
+(* fun int g = Random.range (valOf Int.minInt, valOf Int.maxInt) g *)
+fun int g = Random.range (~100000000, 100000000) g
 fun real g = Random.random g
 fun bool g = Random.random g > 0.5
 fun char g =
@@ -51,4 +55,6 @@ fun triple (t1, t2, t3) g = (t1 g, t2 g, t3 g)
 fun tupel4 (t1, t2, t3, t4) g = (t1 g, t2 g, t3 g, t4 g)
 
 fun tupel5 (t1, t2, t3, t4, t5) g = (t1 g, t2 g, t3 g, t4 g, t5 g)
+
+fun intRange (l, r) g = Random.range (l, r) g
 end
