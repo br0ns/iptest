@@ -49,7 +49,7 @@ open TestDSL
 infixr 0 slut er
 infix 1 afproev note hvor og
 infix 2 ? indeholder
-infix 3 ::: ==> ~~> !!! & >>
+infix 3 ::: ==> ~~> !!! &
 infix 4 eller
 ;maybeUse (Constants.TEST ^ "/ekstra.sml");
 open Gen

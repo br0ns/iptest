@@ -3,7 +3,7 @@ struct
 infixr 0 slut er
 infix 1 afproev note hvor og
 infix 2 ? indeholder
-infix 3 ::: & ==> ~~> !!! >>
+infix 3 ::: & ==> ~~> !!!
 infix 4 eller
 
 type ('a, 'b) folder = ('a * 'b) * 'b -> 'a * 'b
@@ -55,12 +55,8 @@ fun reference f ind =
       )
     end
 
-fun automagisk _ r g =
-    List.tabulate (10000, fn _ => (Gen.run g, reference r))
-
-fun auto >> g = auto g
-
-val med = ()
+fun automagisk n r g =
+    List.tabulate (n, fn _ => (Gen.run g, reference r))
 
 fun (x eller y) ind =
     let
