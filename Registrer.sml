@@ -1,16 +1,16 @@
 structure Registrer =
-struct
+struct open Produkt infix &
 local
-  fun t2 f (x, y) = f x y
-  fun t3 f (x, y) = t2 f x y
-  fun t4 f (x, y) = t3 f x y
-  fun t5 f (x, y) = t4 f x y
-  fun t6 f (x, y) = t5 f x y
-  fun v2 (a, b) (x, y) = Layout.fsep [a x, b y]
-  fun v3 (a, b) (x, y) = Layout.fsep [v2 a x, b y]
-  fun v4 (a, b) (x, y) = Layout.fsep [v3 a x, b y]
-  fun v5 (a, b) (x, y) = Layout.fsep [v4 a x, b y]
-  fun v6 (a, b) (x, y) = Layout.fsep [v5 a x, b y]
+  fun t2 f (x & y) = f x y
+  fun t3 f (x & y) = t2 f x y
+  fun t4 f (x & y) = t3 f x y
+  fun t5 f (x & y) = t4 f x y
+  fun t6 f (x & y) = t5 f x y
+  fun v2 (a & b) (x & y) = Layout.fsep [a x, b y]
+  fun v3 (a & b) (x & y) = Layout.fsep [v2 a x, b y]
+  fun v4 (a & b) (x & y) = Layout.fsep [v3 a x, b y]
+  fun v5 (a & b) (x & y) = Layout.fsep [v4 a x, b y]
+  fun v6 (a & b) (x & y) = Layout.fsep [v5 a x, b y]
 in
 fun funktion n f (va, vr) = ((n, f, va, vr), nil)
                             (* Følgende giver en anelse bedre fejlbeskeder hvis

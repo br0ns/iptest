@@ -1,25 +1,24 @@
 signature Vis =
 sig
-  val unit : unit -> Layout.t
-  val int : int -> Layout.t
-  val real : real -> Layout.t
-  val bool : bool -> Layout.t
-  val string : string -> Layout.t
-  val char : char -> Layout.t
-  val order : order -> Layout.t
-  val list : ('a -> Layout.t) -> 'a list -> Layout.t
-  val option : ('a -> Layout.t) -> 'a option -> Layout.t
+  type 'a t = 'a -> Layout.t
+  val unit : unit t
+  val int : int t
+  val real : real t
+  val bool : bool t
+  val string : string t
+  val char : char t
+  val order : order t
+  val list : 'a t -> 'a list t
+  val option : 'a t -> 'a option t
 
-  val par : ('a -> Layout.t) * ('b -> Layout.t) -> 'a * 'b -> Layout.t
+  val par : 'a t * 'b t -> ('a * 'b) t
 
-  val triple : ('a -> Layout.t) * ('b -> Layout.t) * ('c -> Layout.t) ->
-               'a * 'b * 'c -> Layout.t
+  val triple : 'a t * 'b t * 'c t ->
+               ('a * 'b * 'c) t
 
-  val tupel4 : ('a -> Layout.t) * ('b -> Layout.t) * ('c -> Layout.t) *
-               ('d -> Layout.t) ->
-               'a * 'b * 'c * 'd -> Layout.t
+  val tupel4 : 'a t * 'b t * 'c t * 'd t ->
+               ('a * 'b * 'c * 'd) t
 
-  val tupel5 : ('a -> Layout.t) * ('b -> Layout.t) * ('c -> Layout.t) *
-               ('d -> Layout.t) * ('e -> Layout.t) ->
-               'a * 'b * 'c * 'd * 'e -> Layout.t
+  val tupel5 : 'a t * 'b t * 'c t * 'd t * 'e t ->
+               ('a * 'b * 'c * 'd * 'e) t
 end

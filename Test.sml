@@ -11,9 +11,13 @@ datatype resultat' = Udeladt
                    | Modeksempel of Layout.t * Layout.t * Layout.t list
 type resultat = string * resultat'
 
-type ('a, 'b) funktion = string * ('a -> 'b) * ('a -> Layout.t) * ('b -> Layout.t)
+type ('a, 'b) funktion = string * ('a -> 'b) * 'a Vis.t * 'b Vis.t
 type ('a, 'b) egenskab = 'a -> ('b Lazy.t -> bool) * 'b forventning list
-type ('a, 'b) afproevning = ('a, 'b) funktion * ('a * ('a, 'b) egenskab) list
+(* datatype ('a, 'b) tilfaelde *)
+(*   = Manuel of 'a * ('a, 'b) egenskab *)
+(*   | Auto   of 'a Gen.t * ('a -> 'b) *)
+type ('a, 'b) tilfaelde = ('a * ('a, 'b) egenskab) list
+type ('a, 'b) afproevning = ('a, 'b) funktion * ('a, 'b) tilfaelde
 type opgave = (string * string * string option) * resultat Lazy.t list
 
 open Layout
@@ -22,8 +26,26 @@ val indent = indent Constants.INDRYK
 val L = Lazy.lazy
 val F = Lazy.force
 
-fun tjek  ((n, f, va, vr), cs) =
+
+fun reference f ind =
     let
+      val r' = L (fn _ => f ind)
+      datatype 'a res = V of 'a
+                      | E of string
+      fun eval x = V $ F x handle e => E $ General.exnName e
+    in
+      (fn r => eval r = eval r',
+       [Vaerdi (F r', "_ (referenceimplementering)")
+        handle e => Beskrivelse $ General.exnName e ^
+                    " (referenceimplementering)"
+       ]
+      )
+    end
+
+fun tjek  ((n, f, va, vr), tilfs) =
+    let
+      val pbar = ref $ ProgressBar.init Constants.KOLONNER
+      val delta = 1.0 / Real.fromInt (length tilfs)
       fun indsaet x s =
           let
             fun loop ss =
@@ -37,7 +59,8 @@ fun tjek  ((n, f, va, vr), cs) =
       fun en (ind, egenskab) =
           let
             val (testf, forventninger) = egenskab ind
-            val _ = TextIO.print "."
+            val _ = pbar := ProgressBar.progress (!pbar) delta
+            (* val _ = TextIO.print "." *)
             val _ = Benchmark.start ()
             val ud = L (fn _ => f ind)
             fun forventning f =
@@ -73,7 +96,8 @@ fun tjek  ((n, f, va, vr), cs) =
           end
     in
       TextIO.println ("\n~~~~~ Afprøver %" <- n)
-    ; (n, Resultater $ map en $ rev cs handle Tom => Udeladt)
+    ; (n, Resultater $ map en $ rev tilfs handle Tom => Udeladt)
+      before ProgressBar.progress (!pbar) 1.0
     end
 
 fun udskriv (saetnavn, opgs) =

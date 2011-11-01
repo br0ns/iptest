@@ -2,7 +2,7 @@ signature TestDSL =
 sig
   (* infixr 0 slut er
    * infix 1 afproev note hvor og
-   * infix 2 ? indeholder
+   * infix 2 ? indeholder automagisk
    * infix 3 ::: & ==> ~~> !!!
    * infix 4 eller
    *)
@@ -24,11 +24,13 @@ sig
 
   val opgave : string -> string -> Test.opgave
 
-  val ? : ('a, 'b) Test.afproevning * ('a * ('a, 'b) Test.egenskab) ->
-          ('a, 'b) Test.afproevning
-  val & : 'a * 'b -> 'a * 'b
+  val automagisk : int -> ('a ->''b) ->
+                   'a Gen.t -> ('a, ''b) Test.tilfaelde
 
-  val ::: : 'a * 'b -> 'a * 'b
+  val ? : ('a, 'b) Test.afproevning * ('a, 'b) Test.tilfaelde ->
+          ('a, 'b) Test.afproevning
+
+  val ::: : 'a * ('a, 'b) Test.egenskab -> ('a, 'b) Test.tilfaelde
 
   include Egenskaber
 end

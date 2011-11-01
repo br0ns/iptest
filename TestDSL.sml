@@ -34,10 +34,9 @@ fun fil n = Constants.FILER ^ "/" ^ n
 
 fun (opg, fs) afproev f = (opg, L (fn _ => Test.tjek f) :: fs)
 
-fun (f, cs) ? c = (f, c :: cs)
+fun (f, cs) ? c = (f, c @ cs)
 
-fun a & b = (a, b)
-fun a ::: b = (a, b)
+fun a ::: b = [(a, b)]
 
 fun aekvivalens s f x _ = (fn y => f (F y, x), [Test.Vaerdi (x, s)])
 fun praedikat s f _ = (f o F, [Test.Beskrivelse s])
@@ -56,6 +55,9 @@ fun reference f ind =
       )
     end
 
+fun automagisk n r g =
+    List.tabulate (n, fn _ => (Gen.run g, reference r))
+
 fun (x eller y) ind =
     let
       val (f, a) = x ind
@@ -70,10 +72,18 @@ fun lig x =
       op=
       x
 
+val epsilon = 0.00001
 fun circa x =
     aekvivalens
       "_ modulo epsilon"
-      (fn (x, y) => let val epsilon = 0.00001 in Real.abs (x - y) < epsilon end)
+      (fn (x, y) => Real.abs (x - y) < epsilon)
+      x
+
+fun parCirca x =
+    aekvivalens
+      "_ modulo epsilon"
+      (fn ((x1, x2), (y1, y2)) => Real.abs (x1 - y1) < epsilon andalso
+                                  Real.abs (x2 - y2) < epsilon)
       x
 
 fun permutation x =
@@ -103,6 +113,15 @@ fun blandt xs =
 
 fun a ==> b = a ::: lig b
 fun a ~~> b = a ::: circa b
+
+datatype fil_egenskab = Indeholdende
+val indeholdende = Indeholdende
+
+fun rm file = OS.FileSys.remove (fil file) handle _ => ()
+fun giverFilen name Indeholdende data =
+ fn _ => (fn _ => (TextIO.readFile (fil name) = data before rm (fil name))
+        , [Test.Beskrivelse ("en fil '" ^ name ^ "' indeholdende:\n" ^ data)]
+         )
 
 datatype exn' = Bind
               | Chr

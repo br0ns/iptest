@@ -14,6 +14,10 @@ note "Delopgave b kan ikke maskinafprøves."
   ? explode "tone" & [2, 3, 0, 0, 1] ==> explode "netto"
   ? explode "tone" & []              ==> []
   ? [] & []                          ==> []
+
+  (* afproev udvaelg automagisk med Vejl.afproev *)
+  (* >> list char & list int *)
+  (* >> filtrer (fn (a & b) => *)
 slut
 
 opgave "3" "Sorter og permuter"
@@ -28,6 +32,8 @@ note "Delopgave b kan ikke maskinafprøves."
                                    , ([2, 0, 1], [1.0, 1.0, 1.0])
                                    , ([2, 1, 0], [1.0, 1.0, 1.0])
                                     ]
+  ? automagisk med Vejl.sortPerm
+  >> list real
 slut
 
 opgave "4" "Polynomier"
@@ -198,6 +204,9 @@ note "Delopgave c kan ikke maskinafprøves."
               [[3], [4], [1, 2]],
 
               [[1], [2], [3], [4]]]
+
+  ? automagisk med Vejl.klassedelinger
+  >> list int
 
   afproev bell
   ? 0  ==> 1
