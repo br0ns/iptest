@@ -90,9 +90,9 @@ fun tjek  ((n, f, va, vr), tilfs) =
                      "ms (Interrupt)")
                   | Out_of_memory => "Out_of_memory (uendelig løkke?)"
                   | Io { function, name, cause } =>
-                      "Io { function : "^function^
-                         ", name : "^name^
-                         ", cause : "^ exnMessage cause ^" }"
+                      "Io { function : " ^ function ^
+                         ", name : " ^ name ^
+                         ", cause : " ^ exnMessage cause ^ " }"
                   | _ => General.exnName e
                  ),
                map forventning forventninger
