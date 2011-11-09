@@ -2,6 +2,7 @@ signature Vis =
 sig
   type 'a t = 'a -> Layout.t
   val unit : unit t
+  val fil : string -> unit t
   val int : int t
   val real : real t
   val bool : bool t
