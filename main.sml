@@ -31,7 +31,9 @@ fun stub _ = raise Test.Tom
 
 (* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - *)
 ;println $ "~~~~~ Evaluerer '" ^ Constants.BESVARELSE ^ "'...";
+nonfix $
 ;use Constants.BESVARELSE;
+open General infixr 2 $
 (* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - *)
 
 ;use (Constants.TEST ^ "/typer.sml");
