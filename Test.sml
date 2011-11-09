@@ -54,7 +54,7 @@ fun tjek  ((n, f, va, vr), tilfs) =
                 | s :: ss => s && x && loop ss
                 | _ => txt ""
           in
-            loop $ map softtxt $ String.fields (#"_" \< op=) s
+            loop $ map str $ String.fields (#"_" \< op=) s
           end
       fun en (ind, egenskab) =
           let

@@ -6,6 +6,7 @@ infix ^^ ++ \ & \\ &&
 type 'a t = 'a -> Layout.t
 
 val unit = const $ txt "()"
+fun fil s _ = str (TextIO.readFile s handle Io _ => "% kunne ikke åbnes" <- s)
 fun char c = txt "#\"" ^^ txt (Char.toString c) ^^ txt "\""
 fun string s = quote ^^ softtxt (String.toString s) ^^ quote
 fun option _ NONE = txt "NONE"
