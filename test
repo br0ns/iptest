@@ -2,7 +2,7 @@
 export PATH=/home/sebbe/build/mosml201/bin:$PATH
 if [ $2 ]
 then
-   mosml -P full -quietdec -I "`dirname $0`" "`dirname $0`/main.sml" "$1" "$2"
+   mosml -P full -quietdec -I "`dirname $0`/src" "`dirname $0`/src/main.sml" "$1" "$2"
 else
    echo "Usage: $0 testset filename"
 fi

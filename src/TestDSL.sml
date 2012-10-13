@@ -117,9 +117,8 @@ fun a ~~> b = a ::: circa b
 datatype fil_egenskab = Indeholdende
 val indeholdende = Indeholdende
 
-fun rm file = OS.FileSys.remove (fil file) handle _ => ()
 fun giverFilen name Indeholdende data =
- fn _ => (fn _ => (TextIO.readFile (fil name) = data before rm (fil name))
+ fn _ => (fn _ => (TextIO.readFile (fil name) = data)
         , [Test.Beskrivelse ("en fil '" ^ name ^ "' indeholdende:\n" ^ data)]
          )
 
