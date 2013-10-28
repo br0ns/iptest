@@ -35,12 +35,16 @@ fun fil n = Constants.FILER ^ "/" ^ n
 
 fun datafilerne dir =
   let
+    val tds = FileSys.openDir Constants.FILER
     val ds = FileSys.openDir (Constants.TEST ^ "/" ^ dir)
 
     fun alleFiler ds fs =
       case FileSys.readDir ds of
         NONE   => fs
       | SOME f => alleFiler ds (f::fs)
+
+    val tfs = alleFiler tds [] before FileSys.closeDir tds
+    val _ = List.app (fn f => FileSys.remove (Constants.FILER ^ "/" ^ f)) tfs
 
     val fs = alleFiler ds [] before FileSys.closeDir ds
   in
