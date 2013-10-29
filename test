@@ -1,5 +1,4 @@
 #!/bin/bash
-export PATH=/home/sebbe/build/mosml201/bin:$PATH
 if [ $2 ]
 then
    mosml -P full -quietdec -I "`dirname $0`/src" "`dirname $0`/src/main.sml" "$1" "$2"
