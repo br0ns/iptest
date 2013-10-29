@@ -16,7 +16,7 @@ fun funktion n f (va, vr) = ((n, f, va, vr), nil)
                             (* Følgende giver en anelse bedre fejlbeskeder hvis
                              * testsættet ikke indeholder typeangivelser
                              *)
-                            before (fn x => (va x ; vr $ f x); ())
+                            before (ignore (fn x => (va x ; vr $ f x)))
 val funktion1 = funktion
 fun funktion2 n f (va, vr) = funktion n (t2 f) (v2 va, vr)
 fun funktion3 n f (va, vr) = funktion n (t3 f) (v3 va, vr)
