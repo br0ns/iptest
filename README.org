@@ -1,6 +1,11 @@
 
 #+TITLE: IPTest
 
+Testing framework used in the course "Introduction til Programmering"
+(eng. "Introduction to Programming") at DIKU.
+
+Everything below is written in Danish.
+
 * Installation
   Systemet kan hentes som tarball fra
   [[https://github.com/mortenbp/iptest/tarball/master]]. Der er ingen krav til hvor
@@ -306,4 +311,3 @@
 =Domain=, =Empty=, =Fail=, =Interrupt=, =Match=, =Option=, =Overflow=, =Size=,
 =Subscript=, =Out_Of_Memory= eller blot =undtagelse= for en hvilken-som-helst
 undtagelse.
-
