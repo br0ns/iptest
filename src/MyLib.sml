@@ -111,8 +111,6 @@ fun concatWith s xs =
       nil     => ""
     | [x]     => x
     | x :: xs => x ^ s ^ concatWith s xs
-fun isSubstring a b = true
-fun isSuffix a b = true
 fun scan getc strm = SOME ("", strm)
 end
 structure Substring =

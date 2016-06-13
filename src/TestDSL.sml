@@ -1,7 +1,7 @@
 structure TestDSL :> TestDSL =
 struct
 infixr 0 slut er
-infix 1 afproev note hvor og
+infix 1 afproev note hvor og med
 infix 2 ? indeholder
 infix 3 ::: & ==> ~~> !!!
 infix 4 eller
@@ -29,8 +29,31 @@ fun ((nr, navn, n), l) note b =
      ), l)
 fun x hvor _ = x
 fun x og _ = x
+fun x med _ = x
 fun n indeholder c = TextIO.writeFile (Constants.FILER ^ "/" ^ n) c
 fun fil n = Constants.FILER ^ "/" ^ n
+
+fun datafilerne dir =
+  let
+    val tds = FileSys.openDir Constants.FILER
+    val ds = FileSys.openDir (Constants.TEST ^ "/" ^ dir)
+
+    fun alleFiler ds fs =
+      case FileSys.readDir ds of
+        NONE   => fs
+      | SOME f => alleFiler ds (f::fs)
+
+    val tfs = alleFiler tds [] before FileSys.closeDir tds
+    val _ = List.app (fn f => FileSys.remove (Constants.FILER ^ "/" ^ f)) tfs
+
+    val fs = alleFiler ds [] before FileSys.closeDir ds
+  in
+    List.app (fn f =>
+      let val strm = TextIO.openIn (Constants.TEST ^ "/" ^ dir ^ "/" ^ f) in
+        f indeholder (TextIO.inputAll strm) before TextIO.closeIn strm
+      end
+    ) fs
+  end
 
 fun (opg, fs) afproev f = (opg, L (fn _ => Test.tjek f) :: fs)
 
@@ -114,13 +137,19 @@ fun blandt xs =
 fun a ==> b = a ::: lig b
 fun a ~~> b = a ::: circa b
 
-datatype fil_egenskab = Indeholdende
+datatype fil_egenskab = Indeholdende | Matchende
 val indeholdende = Indeholdende
+val matchende = Matchende
 
 fun giverFilen name Indeholdende data =
- fn _ => (fn _ => (TextIO.readFile (fil name) = data)
+ (fn _ => (fn _ => (TextIO.readFile (fil name) = data)
         , [Test.Beskrivelse ("en fil '" ^ name ^ "' indeholdende:\n" ^ data)]
-         )
+         ))
+  | giverFilen name Matchende refname =
+ (fn _ => (fn _ => (TextIO.readFile (fil name) = TextIO.readFile (fil refname))
+        , [Test.Beskrivelse ("en fil '" ^ name ^ "' matchende '" ^
+                             refname ^ "'")]
+         ))
 
 datatype exn' = Bind
               | Chr

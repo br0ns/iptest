@@ -49,7 +49,7 @@ open Registrer Vis Produkt infix 4 --> & (* $ har 3 *)
 (* datatype ('a, 'b) product = & of 'a * 'b *)
 open TestDSL
 infixr 0 slut er
-infix 1 afproev note hvor og
+infix 1 afproev note hvor og med
 infix 2 ? indeholder
 infix 3 ::: ==> ~~> !!! & &`
 infix 4 eller

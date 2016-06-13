@@ -22,6 +22,7 @@ sig
   val blandt : ''a list -> ('_, ''a) Test.egenskab
   val giverFilen : string -> fil_egenskab -> string -> ('_, 'a) Test.egenskab
   val indeholdende : fil_egenskab
+  val matchende : fil_egenskab
 
   val Bind : exn'
   val Chr : exn'
